@@ -1,5 +1,5 @@
-async function home_res(req,res){
-    res.json({status:true})
+async function create_user_bucket(req,res){
+    res.status(200).json({status:true,message:"Creation success"})
 }
 
-module.exports = {home_res}
+module.exports = {create_user_bucket}
