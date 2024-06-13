@@ -8,7 +8,6 @@ const ClientBucketSchema = new Schema({
     },
     user_id: {
         type: Number,
-        ref: 'User',
         required: false
     },
     is_public:{

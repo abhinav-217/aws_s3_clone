@@ -64,4 +64,28 @@ async function asw_create_bucket(bucket_name, user_id, is_public = false) {
     }
 }
 
-module.exports = { asw_create_bucket }
+async function asw_get_all_buckets(user_id){
+    let err = ""
+    let is_success = true
+    let user_bucket_list = null
+    try {
+        const buckets = await Client_Bucket.find({ user_id });
+        if(buckets.length){
+            user_bucket_list = buckets
+        }else{
+            throw new Error("No buckets found")
+        }
+    } catch (error) {
+        is_success = false;
+        err = error.message
+    } finally{
+        let resp_obj = {
+            "status": is_success
+        }
+        if (!is_success) resp_obj.err = err
+        if (is_success) resp_obj.bucket_list = user_bucket_list
+        return resp_obj
+    }
+}
+
+module.exports = { asw_create_bucket, asw_get_all_buckets }
