@@ -1,29 +1,14 @@
-const { default: mongoose } = require("mongoose")
+const mongoose = require("mongoose");
 
-const connectDB = async ()=>{
+const connectDB = async () => {
     try {
         const url = process.env.MONGO_URL;
         const conn = await mongoose.connect(url, {
-            useNewUrlParser: true,
-          })
-        let check = false;
-        for (const prop in conn) {
-            if (conn.hasOwnProperty(prop)) {
-                if(prop=="connections")
-                {
-                    check = true;
-                    console.log("Db Connected SuccessFully");
-                    break;
-                }
-            }
-        }
-        if(check==false){
-            console.log("Custom Error Says:- ")
-            console.log("DB Not Connected You might need to Add your IP Address In atlas")
-        }
+        });
+        console.log("Db Connected Successfully");
     } catch (error) {
-        console.log("DB Error:- ",error)
+        console.error("DB Error:", error);
     }
-}
+};
 
-module.exports = connectDB;
+module.exports = { connectDB };

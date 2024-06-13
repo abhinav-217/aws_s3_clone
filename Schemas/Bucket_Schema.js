@@ -4,13 +4,16 @@ const Schema = mongoose.Schema;
 const ClientBucketSchema = new Schema({
     bucket_name: {
         type: String,
-        unique: true,
         require:true
     },
     user_id: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Number,
         ref: 'User',
         required: false
+    },
+    is_public:{
+        type:Boolean,
+        default:false
     }
 }, {
     timestamps: true
