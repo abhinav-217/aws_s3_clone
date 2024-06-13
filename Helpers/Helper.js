@@ -1,19 +1,20 @@
-const fs = require('fs');
-const path = require('path');
+const jwt = require("jsonwebtoken");
 
-const DIR_NAME = process.env.DIR_NAME;
+const secretKey = process.env.JWT_SECRETKEY;
 
-function make_bucket_folder(user_id, bucket_name) {
-    const folder_name = `${bucket_name}_${user_id}`;
-    const full_path = path.join(DIR_NAME, folder_name);
-
-    if (!fs.existsSync(full_path)) {
-        fs.mkdirSync(full_path, { recursive: true });
-        console.log(`Folder created: ${full_path}`);
-    } else {
-        console.log(`Folder already exists: ${full_path}`);
-    }
-    
-    return true;
+function generateToken(payload) {
+    const token = jwt.sign(payload, secretKey);
+    return token;
 }
-module.exports = {make_bucket_folder}
+
+function verifyToken(token) {
+    try {
+        const decoded = jwt.verify(token, secretKey);
+        return decoded;
+    } catch (error) {
+        console.error("Token verification failed:", error.message);
+        return null;
+    }
+}
+
+module.exports = {generateToken,verifyToken}
