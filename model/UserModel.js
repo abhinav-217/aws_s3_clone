@@ -44,9 +44,11 @@ async function login_client(email,password){
         if(get_user.length){
             if(get_user[0].password == password){
                 let _id = get_user[0]._id.toString()
+                let is_valid_client = true
                 const payload = {
                     _id, 
-                    email
+                    email,
+                    is_valid_client
                 };
                 token = generateToken(payload);
                 const result = await UserSchema.updateOne(

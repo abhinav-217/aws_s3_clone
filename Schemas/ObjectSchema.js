@@ -16,8 +16,6 @@ const ObjectSchema = new Schema({
     },
     bucket_name: {
         type: String,
-        unique:true,
-        ref: 'Client_Bucket',
         required: true,
     },
     desc: {
