@@ -30,12 +30,11 @@ async function asw_create_bucket(bucket_name, user_id, is_public = false) {
     let is_success = true;
     let err = ""
     let savedBucket = []
-    const folder_name = `${bucket_name}_${user_id}`;
+    const folder_name = `${user_id}\\${bucket_name}`;
     const full_path = path.join(DIR_NAME, folder_name);
 
     try {
         const existing_bucket = await Client_Bucket.findOne({ bucket_name,user_id })
-        console.log(existing_bucket)
         if (!existing_bucket) {
             const folder_result = make_bucket_folder(full_path)
             if (folder_result.status) {
@@ -88,4 +87,24 @@ async function asw_get_all_buckets(user_id){
     }
 }
 
-module.exports = { asw_create_bucket, asw_get_all_buckets }
+async function asw_validate_bucket_name(bucket_name,user_id){
+    let is_success = true;
+    let err = ""
+    try {
+        const existing_bucket = await Client_Bucket.findOne({ bucket_name,user_id })
+        if (!existing_bucket) {
+            throw new Error("Bucket Name does not exists");
+        }
+    } catch (error) {
+        err = error.message
+        is_success = false
+    } finally {
+        let resp_obj = {
+            "status": is_success
+        }
+        if (!is_success) resp_obj.err = err
+        return resp_obj
+    }
+}
+
+module.exports = { asw_create_bucket, asw_get_all_buckets, asw_validate_bucket_name }

@@ -7,7 +7,7 @@ const ClientBucketSchema = new Schema({
         require:true
     },
     user_id: {
-        type: Number,
+        type: mongoose.Schema.Types.ObjectId,
         required: false
     },
     is_public:{

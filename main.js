@@ -10,19 +10,23 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    if(req.url != '/user/login' && req.url != '/user/register'){
-        console.log("Middle Ware Called");
-        auth_token = req.headers.auth_key
-        auth_details = verifyToken(auth_token)
-        isValidToken = auth_details.is_valid_client ?? false
-        if(isValidToken){
-            next()
+    try {
+        console.log(`${req.method} ${req.url}`);
+        if(req.url != '/user/login' && req.url != '/user/register'){
+            console.log("Middle Ware Called");
+            auth_token = req.headers.auth_key
+            auth_details = verifyToken(auth_token)
+            isValidToken = auth_details.is_valid_client ?? false
+            if(isValidToken){
+                next()
+            }else{
+                res.send("Not valid token")
+            }
         }else{
-            res.send("Not valid token")
+            next()
         }
-    }else{
-        next()
+    } catch (error) {
+        res.send("Not valid token")
     }
 });
 
