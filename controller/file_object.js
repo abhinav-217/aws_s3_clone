@@ -23,7 +23,6 @@ async function upload_and_create_file(req,res){
         
         // Initializing ReadStream
         // Writes data in chunks Whereas fs.writeFileSync writes in one go not suitable for large files
-
         const readStream = new Readable();
         readStream._read = () => {}; 
         readStream.push(req.file.buffer); 

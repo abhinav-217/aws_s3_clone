@@ -10,6 +10,10 @@ const ClientBucketSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: false
     },
+    access_token:{
+        type:String,
+        required:true
+    },
     is_public:{
         type:Boolean,
         default:false

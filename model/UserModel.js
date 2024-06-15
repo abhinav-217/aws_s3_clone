@@ -75,4 +75,20 @@ async function login_client(email,password){
     }
 }
 
-module.exports = { register_client, login_client };
+async function update_access_token(access_token,email){
+    try {
+        const result = await UserSchema.updateOne(
+            { email: email }, 
+            { $set: { access_token } }
+        );
+        console.log(result)
+        if(result.modifiedCount == 0) 
+            throw new Error("Unable to update token"+JSON.stringify(result))
+        return true
+    } catch (error) {
+        console.log(error)
+        return false;
+    }
+}
+
+module.exports = { register_client, login_client, update_access_token };

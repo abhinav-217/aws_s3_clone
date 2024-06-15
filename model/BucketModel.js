@@ -1,8 +1,8 @@
 const Client_Bucket = require("../Schemas/Bucket_Schema")
-// const make_bucket_folder = require("../Helpers/Helper")  
+
 const fs = require('fs');
 const path = require('path');
-
+const ObjectSchema = require("../Schemas/ObjectSchema");
 const DIR_NAME = process.env.DIR_NAME;
 
 function make_bucket_folder(full_path) {
@@ -26,7 +26,8 @@ function remove_bucket(full_path){
     }
 }
 
-async function asw_create_bucket(bucket_name, user_id, is_public = false) {
+async function asw_create_bucket(bucket_name, user_id, access_token, is_public) {
+    console.log(arguments)
     let is_success = true;
     let err = ""
     let savedBucket = []
@@ -41,7 +42,8 @@ async function asw_create_bucket(bucket_name, user_id, is_public = false) {
                 const newBucket = new Client_Bucket({
                     bucket_name: bucket_name,
                     user_id: user_id,
-                    is_public: is_public
+                    is_public: is_public,
+                    access_token: access_token,
                 });
                 savedBucket = await newBucket.save();
             } else {
@@ -107,4 +109,38 @@ async function asw_validate_bucket_name(bucket_name,user_id){
     }
 }
 
-module.exports = { asw_create_bucket, asw_get_all_buckets, asw_validate_bucket_name }
+async function server_file(bucket_name,access_token,file_id=null){
+    let is_success = true;
+    let err = ""
+    let final_path = null
+    try {
+        //Checking whether bucket is valid or not 
+        const existing_bucket = await Client_Bucket.findOne({ bucket_name,access_token })
+        
+        // Checking whether file exists or not with bucket name
+        const file_check = await ObjectSchema.findOne({bucket_name:bucket_name,_id:file_id})
+
+        if (!existing_bucket || !file_check) {
+            throw new Error("Bucket Name or either file does not exists");
+        }
+        if(!existing_bucket.is_public)
+            throw new Errot("Bucket is not public")
+
+        let user_id = existing_bucket.user_id.toString()
+        final_path = path.join(process.env.DIR_NAME,user_id,bucket_name,file_check.filename)
+        console.log(final_path)
+    } catch (error) {
+        console.log(error)
+        err = error.message
+        is_success = false
+    } finally {
+        let resp_obj = {
+            status: is_success,
+            path:final_path
+        }
+        if (!is_success) resp_obj.err = err
+        return resp_obj
+    }
+}
+
+module.exports = { asw_create_bucket, asw_get_all_buckets, asw_validate_bucket_name , server_file}

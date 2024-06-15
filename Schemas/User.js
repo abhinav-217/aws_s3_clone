@@ -17,6 +17,10 @@ const UserSchema = new Schema({
     },
     token: {
         type: String,
+    },
+    access_token: {
+        type: String,
+        default:null
     }
 }, {
     timestamps: true

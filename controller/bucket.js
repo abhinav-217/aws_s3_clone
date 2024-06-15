@@ -6,9 +6,10 @@ async function create_user_bucket(req, res) {
         let auth_token = verifyToken(req.headers.auth_key ?? "")
         if(!auth_token.is_valid_client ?? false) throw new Error("Not valid token")
         
-        const { bucket_name } = req.body
+        const { bucket_name,access_token } = req.body
         const is_public = req.body.is_public ?? false
-        const result = await asw_create_bucket(bucket_name, auth_token._id ?? null, is_public)
+        const result = await asw_create_bucket(bucket_name, auth_token._id ?? null,access_token, is_public)
+
         console.log(result)
         res.status(200).json(result)
     } catch (error) {
