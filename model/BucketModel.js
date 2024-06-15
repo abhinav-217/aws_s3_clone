@@ -142,4 +142,41 @@ async function server_file(bucket_name,access_token,file_id=null){
     }
 }
 
-module.exports = { asw_create_bucket, asw_get_all_buckets, asw_validate_bucket_name , server_file}
+async function get_file_details_from_id(file_id){
+    let is_success = true
+    let file_details = null
+    try {
+        file_details = await ObjectSchema.findOne({_id:file_id})
+        if(!file_details) is_success = false
+    } catch (error) {
+        err = error.message
+        is_success = false
+    } finally {
+        let resp_obj = {
+            status: is_success,
+            file_details:file_details
+        }
+        if (!is_success) resp_obj.err = err
+        return resp_obj
+    }
+}
+async function get_bucket_details_from_name(bucket_name){
+    let is_success = true
+    let bucket_details = null
+    try {
+        bucket_details = await Client_Bucket.findOne({bucket_name})
+        if(!bucket_details) is_success = false
+    } catch (error) {
+        err = error.message
+        is_success = false
+    } finally {
+        let resp_obj = {
+            status: is_success,
+            bucket_details:bucket_details
+        }
+        if (!is_success) resp_obj.err = err
+        return resp_obj
+    }
+}
+
+module.exports = { asw_create_bucket, asw_get_all_buckets, asw_validate_bucket_name , server_file, get_file_details_from_id, get_bucket_details_from_name}

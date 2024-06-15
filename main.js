@@ -38,13 +38,6 @@ app.use("/", require('./router/home'))
 app.use("/bucket", require('./router/bucket'))
 app.use("/object",require('./router/file_object'))
 app.use("/serve",require('./router/serve'))
-app.get('/mainBucket', (req,res)=>{
-
-    const filePath = path.join(__dirname, 'public', 'CQ - Terms and Conditions1718405128984.pdf');
-
-    // Send the file
-    res.sendFile(filePath);
-})
 
 app.listen(port, () => {
     connectDB()
