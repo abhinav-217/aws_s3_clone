@@ -24,6 +24,7 @@ function  create_read_stream(filePath) {
 
 async function serve_file(req,res){
     const {bucketName,file_id,access_token} = req.query
+    console.log(bucketName,file_id)
     if(file_id == undefined || file_id == undefined){
         return res.status(400).json({status:false,message:"Either invalid file id"})
     }

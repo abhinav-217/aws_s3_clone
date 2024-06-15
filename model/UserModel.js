@@ -26,14 +26,13 @@ async function register_client(user_name, email, password) {
     } catch (error) {
         is_success = false;
         err = error.message
-    } finally {
-        let resp_obj = {
-            status: is_success,
-        };
-        if (!is_success) resp_obj.err = err;
-        if (is_success) resp_obj.data = saved_user;
-        return resp_obj;
     }
+    let resp_obj = {
+        status: is_success,
+    };
+    if (!is_success) resp_obj.err = err;
+    if (is_success) resp_obj.data = saved_user;
+    return resp_obj;
 }
 
 async function login_client(email,password){
@@ -66,18 +65,17 @@ async function login_client(email,password){
     } catch (error) {
         err = error.message;
         is_success = false;
-    } finally{
-        let resp_obj = {
-            status: is_success,
-        };
-        if (!is_success) resp_obj.err = err;
-        if (is_success) resp_obj.token = token;
-        return resp_obj;
     }
+    let resp_obj = {
+        status: is_success,
+    };
+    if (!is_success) resp_obj.err = err;
+    if (is_success) resp_obj.token = token;
+    return resp_obj;
+    
 }
 
 async function update_bucket_access_token(new_access_token,user_id){
-    console.log(user_id)
     try {
         const result = await ClientBucket.updateMany(
             {
@@ -89,7 +87,6 @@ async function update_bucket_access_token(new_access_token,user_id){
               }
             }
         );
-        console.log(result)
         if(result.modifiedCount == 0) 
             throw new Error("Unable to update token"+JSON.stringify(result))
         return true
@@ -118,7 +115,6 @@ async function replace_new_token(old_access_token,access_token){
 }
 
 async function update_access_token(access_token,email,_id){
-    console.log(access_token)
     let is_success = true
     try {
         const user_details = await UserSchema.findOne({_id})
@@ -129,7 +125,6 @@ async function update_access_token(access_token,email,_id){
             { $set: { access_token } }
         );
         
-
         if(result.modifiedCount == 0) 
             throw new Error("Unable to update token"+JSON.stringify(result))
 

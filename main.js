@@ -15,14 +15,13 @@ app.use((req, res, next) => {
         if(req.url.includes('register') || req.url.includes('login') || req.url.includes('serve/file')){
             next();
         }else{
-            console.log("Middle Ware Called");
             auth_token = req.headers.auth_key
             auth_details = verifyToken(auth_token)
             isValidToken = auth_details.is_valid_client ?? false
             if(isValidToken){
                 next()
             }else{
-                res.send("Not valid token")
+                res.status(400).json({status:false,message:"Not valid token"})
             }
         }
     } catch (error) {
@@ -34,6 +33,11 @@ app.use("/", require('./router/home'))
 app.use("/bucket", require('./router/bucket'))
 app.use("/object",require('./router/file_object'))
 app.use("/serve",require('./router/serve'))
+
+
+app.get("/video",(req,res)=>{
+    
+})
 
 app.listen(port, () => {
     connectDB()

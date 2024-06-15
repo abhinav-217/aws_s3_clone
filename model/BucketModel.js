@@ -54,14 +54,14 @@ async function asw_create_bucket(bucket_name, user_id, access_token, is_public) 
     } catch (error) {
         err = error.message
         is_success = false
-    } finally {
-        let resp_obj = {
-            "status": is_success
-        }
-        if (!is_success) resp_obj.err = err
-        if (is_success) resp_obj.data_saved = savedBucket
-        return resp_obj
     }
+    let resp_obj = {
+        "status": is_success
+    }
+    if (!is_success) resp_obj.err = err
+    if (is_success) resp_obj.data_saved = savedBucket
+    return resp_obj
+    
 }
 
 async function asw_get_all_buckets(user_id){
@@ -78,14 +78,14 @@ async function asw_get_all_buckets(user_id){
     } catch (error) {
         is_success = false;
         err = error.message
-    } finally{
-        let resp_obj = {
-            "status": is_success
-        }
-        if (!is_success) resp_obj.err = err
-        if (is_success) resp_obj.bucket_list = user_bucket_list
-        return resp_obj
     }
+    let resp_obj = {
+        "status": is_success
+    }
+    if (!is_success) resp_obj.err = err
+    if (is_success) resp_obj.bucket_list = user_bucket_list
+    return resp_obj
+    
 }
 
 async function asw_validate_bucket_name(bucket_name,user_id){
@@ -99,13 +99,13 @@ async function asw_validate_bucket_name(bucket_name,user_id){
     } catch (error) {
         err = error.message
         is_success = false
-    } finally {
-        let resp_obj = {
-            "status": is_success
-        }
-        if (!is_success) resp_obj.err = err
-        return resp_obj
     }
+    let resp_obj = {
+        "status": is_success
+    }
+    if (!is_success) resp_obj.err = err
+    return resp_obj
+    
 }
 
 async function server_file(bucket_name,access_token,file_id=null){
@@ -115,7 +115,7 @@ async function server_file(bucket_name,access_token,file_id=null){
     try {
         //Checking whether bucket is valid or not 
         const existing_bucket = await Client_Bucket.findOne({ bucket_name,access_token })
-        
+
         // Checking whether file exists or not with bucket name
         const file_check = await ObjectSchema.findOne({bucket_name:bucket_name,_id:file_id})
 
@@ -132,14 +132,14 @@ async function server_file(bucket_name,access_token,file_id=null){
         console.log(error)
         err = error.message
         is_success = false
-    } finally {
-        let resp_obj = {
-            status: is_success,
-            path:final_path
-        }
-        if (!is_success) resp_obj.err = err
-        return resp_obj
     }
+    let resp_obj = {
+        status: is_success,
+        path:final_path
+    }
+    if (!is_success) resp_obj.err = err
+    return resp_obj
+    
 }
 
 async function get_file_details_from_id(file_id){
@@ -151,14 +151,14 @@ async function get_file_details_from_id(file_id){
     } catch (error) {
         err = error.message
         is_success = false
-    } finally {
-        let resp_obj = {
-            status: is_success,
-            file_details:file_details
-        }
-        if (!is_success) resp_obj.err = err
-        return resp_obj
     }
+    let resp_obj = {
+        status: is_success,
+        file_details:file_details
+    }
+    if (!is_success) resp_obj.err = err
+    return resp_obj
+    
 }
 async function get_bucket_details_from_name(bucket_name){
     let is_success = true
@@ -169,14 +169,39 @@ async function get_bucket_details_from_name(bucket_name){
     } catch (error) {
         err = error.message
         is_success = false
-    } finally {
-        let resp_obj = {
-            status: is_success,
-            bucket_details:bucket_details
-        }
-        if (!is_success) resp_obj.err = err
-        return resp_obj
     }
+    let resp_obj = {
+        status: is_success,
+        bucket_details:bucket_details
+    }
+    if (!is_success) resp_obj.err = err
+    return resp_obj
+    
 }
 
-module.exports = { asw_create_bucket, asw_get_all_buckets, asw_validate_bucket_name , server_file, get_file_details_from_id, get_bucket_details_from_name}
+async function get_bucket_files(bucket_name,_id){
+    let is_success = true
+    let files = null
+    let err = ""
+    try {
+        let bucket_details = await Client_Bucket.findOne({bucket_name:bucket_name,user_id:_id})
+        if(!bucket_details)
+            throw new Error("Bucket name is not valid")
+        files = await ObjectSchema.find({bucket_name})
+        console.log(files)
+        if(files.length==0 || files==null){
+            throw new Error("Unable to perform operation")
+        }
+    }catch (error){
+        is_success = false;
+        err = error.message
+    }
+    let resp_obj = {
+        status: is_success,
+        data:files
+    }
+    if (!is_success) resp_obj.err = err
+    return resp_obj
+}
+
+module.exports = { asw_create_bucket, asw_get_all_buckets, asw_validate_bucket_name , server_file, get_file_details_from_id, get_bucket_details_from_name, get_bucket_files}
