@@ -1,5 +1,6 @@
 const UserSchema = require("../Schemas/User");
-const {generateToken,verifyToken} = require("../Helpers/Helper")
+const {generateToken,verifyToken} = require("../Helpers/Helper");
+const ClientBucket = require("../Schemas/Bucket_Schema");
 
 async function register_client(user_name, email, password) {
     let err = "";
@@ -75,15 +76,73 @@ async function login_client(email,password){
     }
 }
 
-async function update_access_token(access_token,email){
+async function update_bucket_access_token(new_access_token,user_id){
+    console.log(user_id)
     try {
-        const result = await UserSchema.updateOne(
-            { email: email }, 
-            { $set: { access_token } }
+        const result = await ClientBucket.updateMany(
+            {
+              user_id: user_id
+            },
+            {
+              $set: {
+                access_token: new_access_token
+              }
+            }
         );
         console.log(result)
         if(result.modifiedCount == 0) 
             throw new Error("Unable to update token"+JSON.stringify(result))
+        return true
+    } catch (error) {
+        console.log(error)
+        return false;
+    }
+}
+async function replace_new_token(old_access_token,access_token){
+    try {
+        const upd = await UserSchema.updateOne(
+            {
+                access_token:old_access_token
+            },
+            {
+                $set:{
+                    access_token:access_token
+                }
+            }
+        )
+        return upd;
+    } catch (error) {
+        console.log(error.message)
+        return {modifiedCount:0}
+    }
+}
+
+async function update_access_token(access_token,email,_id){
+    console.log(access_token)
+    let is_success = true
+    try {
+        const user_details = await UserSchema.findOne({_id})
+        let old_access_token = user_details.access_token
+
+        const result = await UserSchema.updateOne(
+            { email: email }, 
+            { $set: { access_token } }
+        );
+        
+        const bucket_update = await update_bucket_access_token(access_token,_id)
+
+        if(result.modifiedCount == 0) 
+            is_success = false;
+
+        if(!bucket_update)
+            is_success = false
+
+        if(!is_success){
+            const replace_access_token = await replace_new_token(old_access_token,access_token)
+            if(replace_access_token.modifiedCount == 0) 
+                throw new Error("Unable to update token"+JSON.stringify(result))
+            return false
+        }
         return true
     } catch (error) {
         console.log(error)

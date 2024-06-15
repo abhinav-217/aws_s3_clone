@@ -28,7 +28,7 @@ async function generate_key(req,res){
         if(!auth_details.is_valid_client) throw new Error("Not valid token")
         let {_id,email} = auth_details
         let access_token = v4()
-        const update_res = await update_access_token(access_token,email)
+        const update_res = await update_access_token(access_token,email,_id)
         console.log(update_res)
         if(!update_res) throw new Error("Unable to perform operation")
         res.json({status:true,access_token})
