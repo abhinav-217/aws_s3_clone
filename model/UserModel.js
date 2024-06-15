@@ -129,10 +129,11 @@ async function update_access_token(access_token,email,_id){
             { $set: { access_token } }
         );
         
-        const bucket_update = await update_bucket_access_token(access_token,_id)
 
         if(result.modifiedCount == 0) 
-            is_success = false;
+            throw new Error("Unable to update token"+JSON.stringify(result))
+
+        const bucket_update = await update_bucket_access_token(access_token,_id)
 
         if(!bucket_update)
             is_success = false
