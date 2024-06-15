@@ -27,7 +27,6 @@ function remove_bucket(full_path){
 }
 
 async function asw_create_bucket(bucket_name, user_id, access_token, is_public) {
-    console.log(arguments)
     let is_success = true;
     let err = ""
     let savedBucket = []
