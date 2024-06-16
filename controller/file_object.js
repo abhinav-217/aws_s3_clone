@@ -43,6 +43,7 @@ async function upload_and_create_file(req,res){
                 file_url:outputPath,
                 ext:ext,
                 bucket_name:bucket_name,
+                user_id:_id,
                 desc:desc
             }
             const result = await create_file_details(file_details)

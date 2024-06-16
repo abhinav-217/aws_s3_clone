@@ -193,7 +193,7 @@ async function get_bucket_files(bucket_name,_id){
         let bucket_details = await Client_Bucket.findOne({bucket_name:bucket_name,user_id:_id})
         if(!bucket_details)
             throw new Error("Bucket name is not valid")
-        files = await ObjectSchema.find({bucket_name})
+        files = await ObjectSchema.find({bucket_name:bucket_name,user_id:_id})
         console.log(files)
         if(files.length==0 || files==null){
             throw new Error("Unable to perform operation")
@@ -224,8 +224,8 @@ async function delete_bucket(bucket_name,_id){
               console.log(`${folder_path} is deleted!`);
             }
         });
-        const delete_resp = await Client_Bucket.deleteOne({bucket_name})
-        const file_delete_resp = await ObjectSchema.deleteMany({bucket_name})
+        const delete_resp = await Client_Bucket.deleteOne({bucket_name,user_id:_id})
+        const file_delete_resp = await ObjectSchema.deleteMany({bucket_name,user_id:_id})
     }catch (error){
         is_success = false;
         err = error.message
