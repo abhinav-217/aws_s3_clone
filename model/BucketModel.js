@@ -133,7 +133,6 @@ async function server_file(bucket_name,access_token,file_id=null){
 
         let user_id = existing_bucket.user_id.toString()
         final_path = path.join(process.env.DIR_NAME,user_id,bucket_name,file_check.filename)
-        console.log(final_path)
     } catch (error) {
         console.log(error)
         err = error.message
