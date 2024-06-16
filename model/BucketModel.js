@@ -19,14 +19,6 @@ function make_bucket_folder(full_path) {
     }
 }
 
-function remove_bucket(full_path){
-    if (fs.existsSync(full_path)) {
-        fs.rmSync(full_path, { recursive: true, force: true });
-    } else {
-        //to do 
-    }
-}
-
 async function asw_create_bucket(bucket_name, user_id, access_token, is_public) {
     let is_success = true;
     let err = ""
@@ -194,7 +186,6 @@ async function get_bucket_files(bucket_name,_id){
         if(!bucket_details)
             throw new Error("Bucket name is not valid")
         files = await ObjectSchema.find({bucket_name:bucket_name,user_id:_id})
-        console.log(files)
         if(files.length==0 || files==null){
             throw new Error("Unable to perform operation")
         }
@@ -224,8 +215,8 @@ async function delete_bucket(bucket_name,_id){
               console.log(`${folder_path} is deleted!`);
             }
         });
-        const delete_resp = await Client_Bucket.deleteOne({bucket_name,user_id:_id})
-        const file_delete_resp = await ObjectSchema.deleteMany({bucket_name,user_id:_id})
+        const delete_resp = await Client_Bucket.deleteOne({bucket_name,user_id:_id}) // Deleting bucket
+        const file_delete_resp = await ObjectSchema.deleteMany({bucket_name,user_id:_id}) // Deleting all the objects of that bucket
     }catch (error){
         is_success = false;
         err = error.message

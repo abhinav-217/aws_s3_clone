@@ -24,12 +24,10 @@ function  create_read_stream(filePath) {
 
 async function serve_file(req,res){
     const {bucketName,file_id,access_token} = req.query
-    console.log(bucketName,file_id)
     if(file_id == undefined || file_id == undefined){
         return res.status(400).json({status:false,message:"Either invalid file id"})
     }
     const path_res = await server_file(bucketName,access_token,file_id)
-    console.log(path_res)
     if(path_res.status){
         res.sendFile(path_res.path)
     }else{
@@ -41,7 +39,6 @@ async function serve_file(req,res){
 async function stream_file(req,res){
     try {
         const {bucket_name,file_id} = req.body
-        console.log(bucket_name,file_id)
         let auth_token = verifyToken(req.headers.auth_key ?? "")
         if(!auth_token.is_valid_client) res.status(400).json({status:false,message:"Not valid token"});
         if(file_id == undefined || bucket_name == undefined){
@@ -51,6 +48,7 @@ async function stream_file(req,res){
         let {_id,email} = auth_token
         let file_resp = await get_file_details_from_id(file_id)
         let bucket_resp = await get_bucket_details_from_name(bucket_name,_id)
+
         if(file_resp.status && bucket_resp.status){
             let file_details = file_resp.file_details
             let bucket_details = bucket_resp.bucket_details
@@ -58,18 +56,22 @@ async function stream_file(req,res){
                 throw new Error("Bucket name is invalid")
             if(file_details.bucket_name != bucket_name) 
                 throw new Error("File should belong to the given bucket name")
+
+            // Setting content disposition and content type for sending binary file
             res.set({
                 'Content-Disposition': `inline; filename="${file_id}"`,
                 'Content-Type': 'application/octet-stream',
             });
+            // Creating a readStream
             let fileStream = fs.createReadStream(file_details.file_url)
-            console.log(fileStream)
+            // Piping the response with readStream
             fileStream.pipe(res);
             fileStream.on('error', (err) => {
                 console.error(`Error reading file`);
                 res.status(500).send(`Error reading file ${file_details.filename}`);
             });
             fileStream.on('end', () => {
+                // Sending readStream on finish
                 console.log(`File streamed successfully`);
                 res.end();
             });

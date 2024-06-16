@@ -24,13 +24,17 @@ async function login_user(req,res){
 async function generate_key(req,res){
     try {
         let auth_token = req.headers.auth_key ?? ""
+        //Checking auth token
         const auth_details = verifyToken(auth_token)
-        if(!auth_details.is_valid_client) throw new Error("Not valid token")
+        if(!auth_details.is_valid_client) 
+            throw new Error("Not valid token")
+        
         let {_id,email} = auth_details
         let access_token = v4()
         const update_res = await update_access_token(access_token,email,_id)
-        console.log(update_res)
-        if(!update_res) throw new Error("Unable to perform operation")
+
+        if(!update_res) 
+            throw new Error("Unable to perform operation")
         res.json({status:true,access_token})
     } catch (error) {
         res.status(500).json({status:false,message:error.message})

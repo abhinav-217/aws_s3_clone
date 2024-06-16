@@ -35,10 +35,6 @@ app.use("/object",require('./router/file_object'))
 app.use("/serve",require('./router/serve'))
 
 
-app.get("/video",(req,res)=>{
-    
-})
-
 app.listen(port, () => {
     connectDB()
     console.log(`Example app listening on port ${port}`)

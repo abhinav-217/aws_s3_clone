@@ -7,8 +7,7 @@ async function register_client(user_name, email, password) {
     let saved_user = null;
     let is_success = true;
     try {
-        const check_existing_user = await UserSchema.findOne({ email });
-        console.log(check_existing_user)
+        const check_existing_user = await UserSchema.findOne({ email }); //Checking if email already exists or not
         if (!check_existing_user) {
             let token = null
             const new_user = new UserSchema({
@@ -50,7 +49,7 @@ async function login_client(email,password){
                     email,
                     is_valid_client
                 };
-                token = generateToken(payload);
+                token = generateToken(payload); // Generating and updating the token in db
                 const result = await UserSchema.updateOne(
                     { email: email }, 
                     { $set: { token } }
@@ -77,6 +76,7 @@ async function login_client(email,password){
 
 async function update_bucket_access_token(new_access_token,user_id){
     try {
+        // Updating access token of all the buckets of a particular user with new access token
         const result = await ClientBucket.updateMany(
             {
               user_id: user_id
@@ -87,7 +87,7 @@ async function update_bucket_access_token(new_access_token,user_id){
               }
             }
         );
-        if(result.modifiedCount == 0 && result.matchedCount != 0) 
+        if(result.modifiedCount == 0 && result.matchedCount != 0) // If there is a match but still no records were modified return error
             throw new Error("Unable to update token"+JSON.stringify(result))
         return true
     } catch (error) {
@@ -97,6 +97,7 @@ async function update_bucket_access_token(new_access_token,user_id){
 }
 async function replace_new_token(old_access_token,access_token){
     try {
+        
         const upd = await UserSchema.updateOne(
             {
                 access_token:old_access_token

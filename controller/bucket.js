@@ -2,7 +2,6 @@ const { asw_create_bucket, asw_get_all_buckets, get_bucket_files, delete_bucket 
 const {verifyToken} = require("../Helpers/Helper")
 async function create_user_bucket(req, res) {
     try {
-        console.log(req.body)
         let auth_token = verifyToken(req.headers.auth_key ?? "")
         if(!auth_token.is_valid_client ?? false) 
             throw new Error("Not valid token")
@@ -10,8 +9,6 @@ async function create_user_bucket(req, res) {
         const { bucket_name,access_token } = req.body
         const is_public = req.body.is_public ?? false
         const result = await asw_create_bucket(bucket_name, auth_token._id ?? null,access_token, is_public)
-
-        console.log(result)
         res.status(200).json(result)
     } catch (error) {
         res.status(500).json({ status: false, message: "Something Went wrong" })

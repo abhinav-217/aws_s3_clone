@@ -19,20 +19,17 @@ async function delete_file(bucket_name,_id,file_id){
     try {
         let bucket_details = await Client_Bucket.findOne({bucket_name:bucket_name,user_id:_id})
         let file_details = await ObjectSchema.findOne({_id:file_id})
-        console.log(bucket_details)
-        console.log(file_details)
         if(!bucket_details)
             throw new Error("Bucket Name is not valid")
         if(!file_details)
             throw new Error("Not valid file information")
 
-        const file_delete_resp = await ObjectSchema.deleteOne({_id:file_id})
-        console.log(file_delete_resp)
+        const file_delete_resp = await ObjectSchema.deleteOne({_id:file_id,user_id:_id})
 
         if(file_delete_resp.deletedCount === 0)
             throw new Error("Unable to delete file form db")
         const file_path = path.join(process.env.DIR_NAME, _id, bucket_name, file_details.filename)
-        console.log(file_path)
+
         fs.rm(file_path, { recursive: true, force: true }, async (err) => {
             if (err) {
                 const insert_backup = new ObjectSchema(file_details)

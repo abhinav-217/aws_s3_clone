@@ -30,7 +30,6 @@ async function upload_and_create_file(req,res){
         
         // Creating outputPath and Initializing WriteStream
         const outputPath = path.join(process.env.DIR_NAME,_id, bucket_name,filename);
-        console.log(outputPath)
         const writeStream = fs.createWriteStream(outputPath); 
 
         //piping read and write stream
