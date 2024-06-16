@@ -112,7 +112,7 @@ async function server_file(bucket_name,access_token,file_id=null){
     let final_path = null
     try {
         //Checking whether bucket is valid or not 
-        const existing_bucket = await Client_Bucket.findOne({ bucket_name,access_token })
+        const existing_bucket = await Client_Bucket.findOne({ bucket_name:bucket_name,access_token:access_token,is_public:true })
 
         // Checking whether file exists or not with bucket name
         const file_check = await ObjectSchema.findOne({bucket_name:bucket_name,_id:file_id})
