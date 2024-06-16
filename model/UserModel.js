@@ -87,7 +87,7 @@ async function update_bucket_access_token(new_access_token,user_id){
               }
             }
         );
-        if(result.modifiedCount == 0) 
+        if(result.modifiedCount == 0 && result.matchedCount != 0) 
             throw new Error("Unable to update token"+JSON.stringify(result))
         return true
     } catch (error) {

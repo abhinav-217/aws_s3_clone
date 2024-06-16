@@ -50,8 +50,7 @@ async function stream_file(req,res){
 
         let {_id,email} = auth_token
         let file_resp = await get_file_details_from_id(file_id)
-        let bucket_resp = await get_bucket_details_from_name(bucket_name)
-        
+        let bucket_resp = await get_bucket_details_from_name(bucket_name,_id)
         if(file_resp.status && bucket_resp.status){
             let file_details = file_resp.file_details
             let bucket_details = bucket_resp.bucket_details

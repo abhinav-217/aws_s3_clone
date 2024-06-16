@@ -3,6 +3,7 @@ const Client_Bucket = require("../Schemas/Bucket_Schema")
 const fs = require('fs');
 const path = require('path');
 const ObjectSchema = require("../Schemas/ObjectSchema");
+const User = require("../Schemas/User");
 const DIR_NAME = process.env.DIR_NAME;
 
 function make_bucket_folder(full_path) {
@@ -35,21 +36,26 @@ async function asw_create_bucket(bucket_name, user_id, access_token, is_public) 
 
     try {
         const existing_bucket = await Client_Bucket.findOne({ bucket_name,user_id })
-        if (!existing_bucket) {
-            const folder_result = make_bucket_folder(full_path)
-            if (folder_result.status) {
-                const newBucket = new Client_Bucket({
-                    bucket_name: bucket_name,
-                    user_id: user_id,
-                    is_public: is_public,
-                    access_token: access_token,
-                });
-                savedBucket = await newBucket.save();
+        const user_details = await User.findOne({_id:user_id})
+        if(user_details && user_details.access_token == access_token){
+            if (!existing_bucket) {
+                const folder_result = make_bucket_folder(full_path)
+                if (folder_result.status) {
+                    const newBucket = new Client_Bucket({
+                        bucket_name: bucket_name,
+                        user_id: user_id,
+                        is_public: is_public,
+                        access_token: access_token,
+                    });
+                    savedBucket = await newBucket.save();
+                } else {
+                    throw new Error(folder_result.message)
+                }
             } else {
-                throw new Error(folder_result.message)
+                throw new Error("Bucket Name already exists");
             }
-        } else {
-            throw new Error("Bucket Name already exists");
+        }else{
+            throw new Error("Invalid access token")
         }
     } catch (error) {
         err = error.message
@@ -144,6 +150,7 @@ async function server_file(bucket_name,access_token,file_id=null){
 
 async function get_file_details_from_id(file_id){
     let is_success = true
+    let err = ""
     let file_details = null
     try {
         file_details = await ObjectSchema.findOne({_id:file_id})
@@ -160,11 +167,11 @@ async function get_file_details_from_id(file_id){
     return resp_obj
     
 }
-async function get_bucket_details_from_name(bucket_name){
+async function get_bucket_details_from_name(bucket_name,user_id){
     let is_success = true
     let bucket_details = null
     try {
-        bucket_details = await Client_Bucket.findOne({bucket_name})
+        bucket_details = await Client_Bucket.findOne({bucket_name,user_id})
         if(!bucket_details) is_success = false
     } catch (error) {
         err = error.message
