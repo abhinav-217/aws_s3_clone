@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const {create_file_details} = require("../model/ObjectModel")
+const {create_file_details, delete_bucket, delete_file} = require("../model/ObjectModel")
 const { Readable } = require('stream');
 const {verifyToken} = require("../Helpers/Helper")
 const {asw_validate_bucket_name} = require("../model/BucketModel");
@@ -65,4 +65,18 @@ async function upload_and_create_file(req,res){
     }
 }
 
-module.exports = {upload_and_create_file}
+
+async function delete_file_only(req,res){
+    try {
+        let auth_token = verifyToken(req.headers.auth_key ?? "")
+        if(!auth_token.is_valid_client ?? false) 
+            throw new Error("Not valid token")
+        let {_id,email} = auth_token
+        const {bucket_name,file_id} = req.body
+        let bucket_details = await delete_file(bucket_name,_id,file_id) 
+        res.status(200).json(bucket_details)
+    } catch (error) {
+        res.status(500).json({status:false, message:error.message})
+    }
+}
+module.exports = {upload_and_create_file, delete_file_only}

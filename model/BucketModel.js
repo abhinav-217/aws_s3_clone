@@ -204,4 +204,31 @@ async function get_bucket_files(bucket_name,_id){
     return resp_obj
 }
 
-module.exports = { asw_create_bucket, asw_get_all_buckets, asw_validate_bucket_name , server_file, get_file_details_from_id, get_bucket_details_from_name, get_bucket_files}
+async function delete_bucket(bucket_name,_id){
+    let is_success = true
+    let err = ""
+    try {
+        let bucket_details = await Client_Bucket.findOne({bucket_name:bucket_name,user_id:_id})
+        if(!bucket_details)
+            throw new Error("Bucket Name is not valid")
+
+        const folder_path = path.join(process.env.DIR_NAME, _id, bucket_name)
+        fs.rm(folder_path, { recursive: true, force: true }, (err) => {
+            if (!err) {
+              console.log(`${folder_path} is deleted!`);
+            }
+        });
+        const delete_resp = await Client_Bucket.deleteOne({bucket_name})
+        const file_delete_resp = await ObjectSchema.deleteMany({bucket_name})
+    }catch (error){
+        is_success = false;
+        err = error.message
+    }
+    let resp_obj = {
+        status: is_success
+    }
+    if (!is_success) resp_obj.err = err
+    return resp_obj
+}
+
+module.exports = { asw_create_bucket, asw_get_all_buckets, asw_validate_bucket_name , server_file, get_file_details_from_id, get_bucket_details_from_name, get_bucket_files, delete_bucket}
