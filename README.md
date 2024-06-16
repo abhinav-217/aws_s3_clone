@@ -446,3 +446,44 @@ Example Response
     "status": true
 }
 ```
+
+
+
+
+#### Delete Object
+
+```http
+  POST /object/delete
+```
+
+Request Headers
+| key        | Type     | Description             |
+| :--------- | :------- | :---------------------- |
+| `auth_key` | `string` | **Required**. Your auth key |
+
+Request body
+| key           | Type     | Description                  |
+| :------------ | :------- | :--------------------------- |
+| `bucket_name` | `string` | **Required**. The name of the bucket |
+| `file_id`     | `string` | **Required**. The ID of the file to delete |
+
+Example Request Headers
+```http
+auth_key: your_auth_key_here
+```
+
+Example Request body
+```json
+{
+    "bucket_name": "delete_testing",
+    "file_id": "666eb039d1004fcbcc51db47"
+}
+```
+
+Example Response
+```json
+{
+    "status": true
+}
+```
+
