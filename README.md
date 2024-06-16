@@ -2,16 +2,16 @@ A amazon aws s3 bucket clone
 
 How to run 
 
-```http
+```
   git clone https://github.com/abhinav-217/aws_s3_clone.git
 ```
 Intall the packages
-```http
+```
   npm install 
 ```
 
 Run the project
-```http
+```
   node main.js
 ```
 
@@ -23,7 +23,7 @@ Run the project
 
 #### Register
 
-```http
+```
   POST /user/register
 ```
 
@@ -61,7 +61,7 @@ Example Response
 ```
 #### Login
 
-```http
+```
   POST /user/login
 ```
 
@@ -89,7 +89,7 @@ Example Response
 
 #### Generate Access Token
 
-```http
+```
   POST /user/generate_access_token
 ```
 Access token is used access the files which are in a public bucket
@@ -100,7 +100,7 @@ Request Headers
 | `auth_key` | `string` | **Required**. Your auth key |
 
 Example Request Headers
-```http
+```
 auth_key: your_auth_key_here
 ```
 
@@ -116,7 +116,7 @@ Example Response
 An user can create multiple buckets but bucket name has to be unique 
 
 
-```http
+```
   POST /bucket/create_bucket
 ```
 
@@ -133,7 +133,7 @@ Request body
 | `access_token`| `string`  | **Required**. Your access token |
 
 Example Request Headers
-```http
+```
 auth_key: your_auth_key_here
 ```
 
@@ -165,7 +165,7 @@ Example Response
 
 #### Get All Buckets
 
-```http
+```
   GET /bucket/get_all_buckets
 ```
 
@@ -210,7 +210,7 @@ Example Response
 
 #### Upload Object
 
-```http
+```
   POST /object/upload
 ```
 
@@ -244,7 +244,7 @@ Example Response
 
 #### Stream File
 
-```http
+```
   POST /serve/stream
 ```
 
@@ -260,7 +260,7 @@ Request body
 | `file_id`     | `string` | **Required**. Your file ID |
 
 Example Request Headers
-```http
+```
 auth_key: your_auth_key_here
 ```
 
@@ -281,7 +281,7 @@ Here's the GitHub README for the `/serve/file` endpoint:
 
 #### Serve File
 
-```http
+```
   GET /serve/file
 ```
 
@@ -293,7 +293,7 @@ Query Parameters
 | `access_token` | `string` | **Required**. Your access token |
 
 Example URL
-```http
+```
 http://localhost:3000/serve/file?bucketName=staging&file_id=666eb0a1d1004fcbcc51db57&access_token=12916ae3-98e6-4389-bb11-b0604643b03f
 ```
 
@@ -305,7 +305,7 @@ Example Response
 #### Get Bucket Details
 Give's all the objects under one bucket
 
-```http
+```
   POST /bucket
 ```
 
@@ -320,7 +320,7 @@ Request body
 | `bucket_name` | `string` | **Required**. Your bucket name |
 
 Example Request Headers
-```http
+```
 auth_key: your_auth_key_here
 ```
 
@@ -375,7 +375,7 @@ Example Response
 
 #### Delete Bucket
 
-```http
+```
   POST /bucket/delete
 ```
 Delete's the bucket and all the objects inside it
@@ -412,7 +412,7 @@ Here's the GitHub README for the `/object/delete` endpoint:
 
 #### Delete Object
 
-```http
+```
   POST /object/delete
 ```
 
@@ -446,44 +446,3 @@ Example Response
     "status": true
 }
 ```
-
-
-
-
-#### Delete Object
-
-```http
-  POST /object/delete
-```
-
-Request Headers
-| key        | Type     | Description             |
-| :--------- | :------- | :---------------------- |
-| `auth_key` | `string` | **Required**. Your auth key |
-
-Request body
-| key           | Type     | Description                  |
-| :------------ | :------- | :--------------------------- |
-| `bucket_name` | `string` | **Required**. The name of the bucket |
-| `file_id`     | `string` | **Required**. The ID of the file to delete |
-
-Example Request Headers
-```http
-auth_key: your_auth_key_here
-```
-
-Example Request body
-```json
-{
-    "bucket_name": "delete_testing",
-    "file_id": "666eb039d1004fcbcc51db47"
-}
-```
-
-Example Response
-```json
-{
-    "status": true
-}
-```
-
