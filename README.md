@@ -277,8 +277,6 @@ Example Response
 
 (Note: The response is binary data of the file, not JSON.)
 
-Here's the GitHub README for the `/serve/file` endpoint:
-
 #### Serve File
 
 ```
@@ -407,8 +405,6 @@ Example Response
     "status": true
 }
 ```
-
-Here's the GitHub README for the `/object/delete` endpoint:
 
 #### Delete Object
 
