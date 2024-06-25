@@ -121,7 +121,7 @@ async function server_file(bucket_name,access_token,file_id=null){
             throw new Error("Bucket Name or either file does not exists");
         }
         if(!existing_bucket.is_public)
-            throw new Errot("Bucket is not public")
+            throw new Error("Bucket is not public")
 
         let user_id = existing_bucket.user_id.toString()
         final_path = path.join(process.env.DIR_NAME,user_id,bucket_name,file_check.filename)
